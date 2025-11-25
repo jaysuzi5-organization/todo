@@ -1,0 +1,11 @@
+site_name: 'todo'
+site_description: 'Main documentation for todo'
+repo_url: https://github.com/jaysuzi5/todo
+edit_uri: edit/main/docs
+
+plugins:
+  - techdocs-core
+
+nav:
+  - Overview:
+      - Getting started: 'docs/index.md'
