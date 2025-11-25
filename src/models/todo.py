@@ -20,9 +20,8 @@ class Todo(Base):
 
     Attributes:
         id (int): Primary key, unique identifier for the record.
-        username (str): Unique username, up to 50 characters. Cannot be null.
-        email (str): Unique email address, up to 120 characters. Cannot be null.
-        full_name (str | None): Optional full name of the user, up to 100 characters.
+        task (str): Task description, up to 200 characters. Cannot be null.
+        due_date (datetime | None): Optional due date for the task.
         create_date (datetime): Timestamp when the record was created (UTC).
         update_date (datetime): Timestamp when the record was last updated (UTC).
 
@@ -34,9 +33,8 @@ class Todo(Base):
     __tablename__ = "todo"
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(50), unique=True, nullable=False, index=True)
-    email = Column(String(120), unique=True, nullable=False, index=True)
-    full_name = Column(String(100), nullable=True)
+    task = Column(String(200), nullable=False, index=True)
+    due_date = Column(DateTime, nullable=True)
     create_date = Column(DateTime, default=lambda: datetime.now(UTC))
     update_date = Column(
         DateTime,
@@ -49,9 +47,9 @@ class Todo(Base):
         Returns a string representation of the Todo instance.
 
         Example:
-            <Todo(id=1, username='johndoe', email='john@example.com')>
+            <Todo(id=1, task='Buy groceries')>
         """
-        return f"<Todo(id={self.id}, username='{self.username}', email='{self.email}')>"
+        return f"<Todo(id={self.id}, task='{self.task}')>"
 
 
 class TodoCreate(BaseModel):
@@ -59,17 +57,14 @@ class TodoCreate(BaseModel):
     Pydantic schema for creating a new Todo.
 
     Attributes:
-        username (str): Required username for the new user.
-        email (str): Required email address for the new user.
-        full_name (str | None): Optional full name of the user.
+        task (str): Required task description.
+        due_date (datetime | None): Optional due date for the task.
 
     Example:
         {
-            "username": "johndoe",
-            "email": "john@example.com",
-            "full_name": "John Doe"
+            "task": "Buy groceries",
+            "due_date": "2025-12-31T23:59:59Z"
         }
     """
-    username: str
-    email: str
-    full_name: Optional[str] = None
+    task: str
+    due_date: Optional[datetime] = None

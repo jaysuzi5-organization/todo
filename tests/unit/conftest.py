@@ -40,18 +40,25 @@ def db_session(test_engine):
     transaction = connection.begin()
     Session = sessionmaker(bind=connection)
     db = Session()
-    
+
     # Start a savepoint for nested transactions
     db.begin_nested()
-    
+
     yield db
-    
-    # Cleanup
+
+    # Cleanup - rollback and clear all data
     db.rollback()
     db.close()
     if transaction.is_active:
         transaction.rollback()
     connection.close()
+
+    # Clear all data from tables after each test
+    with test_engine.connect() as conn:
+        trans = conn.begin()
+        for table in reversed(Base.metadata.sorted_tables):
+            conn.execute(table.delete())
+        trans.commit()
 
 @pytest.fixture
 def client(db_session):

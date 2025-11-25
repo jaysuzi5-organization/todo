@@ -17,6 +17,7 @@ Environment Variables:
 import os
 import logging
 from time import sleep
+from pathlib import Path
 from fastapi import FastAPI
 from sqlalchemy import text
 from contextlib import asynccontextmanager
@@ -105,4 +106,8 @@ if os.getenv("TESTING") != "true":
 app.include_router(health.router, tags=["Health"])
 app.include_router(info.router, tags=["Info"])
 app.include_router(todo.router, tags=["todo"])
-app.mount("/todo/test", StaticFiles(directory="static", html=True), name="test")
+
+# Mount static files (use absolute path relative to this file)
+static_dir = Path(__file__).parent / "static"
+if static_dir.exists():
+    app.mount("/todo/test", StaticFiles(directory=str(static_dir), html=True), name="test")
