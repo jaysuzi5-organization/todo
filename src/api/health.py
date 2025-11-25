@@ -12,4 +12,4 @@ def health():
               The key 'status' will be set to 'UP' to signal that the service is
               running and responsive.
     """
-    return {"status": "UP"}
+    return {"status": "UP!"}
